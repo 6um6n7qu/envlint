@@ -55,6 +55,18 @@ Exit code is non-zero when validation fails, making it easy to integrate into CI
 
 ---
 
+## Supported Types
+
+| Type | Description |
+|------|-------------|
+| `required` | Variable must be present and non-empty |
+| `optional` | Variable may be absent or empty |
+| `url` | Value must be a valid URL (e.g. `https://example.com`) |
+| `number` | Value must be a valid integer or float |
+| `bool` | Value must be `true`, `false`, `1`, or `0` |
+
+---
+
 ## Flags
 
 | Flag | Default | Description |
