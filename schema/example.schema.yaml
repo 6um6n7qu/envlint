@@ -1,0 +1,37 @@
+# envlint schema definition
+# Each key under `vars` is the environment variable name.
+vars:
+  APP_ENV:
+    description: Deployment environment (development, staging, production)
+    type: string
+    required: true
+    pattern: "^(development|staging|production)$"
+
+  PORT:
+    description: Port the HTTP server listens on
+    type: int
+    required: true
+
+  DATABASE_URL:
+    description: PostgreSQL connection string
+    type: url
+    required: true
+
+  DEBUG:
+    description: Enable verbose debug logging
+    type: bool
+    required: false
+    default: "false"
+
+  SECRET_KEY:
+    description: Secret key used for signing tokens
+    type: string
+    required: true
+    pattern: ".{32,}"
+
+  LOG_LEVEL:
+    description: Log verbosity level
+    type: string
+    required: false
+    default: "info"
+    pattern: "^(debug|info|warn|error)$"
