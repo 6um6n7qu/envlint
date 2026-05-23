@@ -7,45 +7,35 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-// VarType represents the expected type of an environment variable.
-type VarType string
-
-const (
-	TypeString  VarType = "string"
-	TypeInt     VarType = "int"
-	TypeBool    VarType = "bool"
-	TypeURL     VarType = "url"
-)
-
-// VarDefinition describes a single expected environment variable.
+// VarDefinition describes a single environment variable in the schema.
 type VarDefinition struct {
-	Description string  `yaml:"description"`
-	Type        VarType `yaml:"type"`
-	Required    bool    `yaml:"required"`
-	Default     string  `yaml:"default"`
-	Pattern     string  `yaml:"pattern"`
+	Name          string   `yaml:"name"`
+	Required      bool     `yaml:"required"`
+	Pattern       string   `yaml:"pattern"`
+	AllowedValues []string `yaml:"allowed_values"`
+	Default       string   `yaml:"default"`
+	Description   string   `yaml:"description"`
+	Group         string   `yaml:"group"`
 }
 
-// Schema holds the full set of variable definitions loaded from a schema file.
+// Schema is the top-level structure of a schema YAML file.
 type Schema struct {
-	Vars map[string]VarDefinition `yaml:"vars"`
+	Version string          `yaml:"version"`
+	Vars    []VarDefinition `yaml:"vars"`
 }
 
-// Load reads and parses a YAML schema file from the given path.
+// Load reads and parses a schema YAML file from the given path.
 func Load(path string) (*Schema, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
-		return nil, fmt.Errorf("reading schema file: %w", err)
+		return nil, fmt.Errorf("schema: read %q: %w", path, err)
 	}
-
 	var s Schema
 	if err := yaml.Unmarshal(data, &s); err != nil {
-		return nil, fmt.Errorf("parsing schema file: %w", err)
+		return nil, fmt.Errorf("schema: parse %q: %w", path, err)
 	}
-
-	if s.Vars == nil {
-		s.Vars = make(map[string]VarDefinition)
+	if len(s.Vars) == 0 {
+		return nil, fmt.Errorf("schema: %q defines no variables", path)
 	}
-
 	return &s, nil
 }
