@@ -70,3 +70,16 @@ func TestRender_EmptyEntries(t *testing.T) {
 		t.Errorf("expected empty output, got: %q", out)
 	}
 }
+
+func TestRender_Dotenv_ValueWithEquals(t *testing.T) {
+	entries := []Entry{
+		{Key: "DATABASE_URL", Value: "postgres://user:pass@host/db?sslmode=disable"},
+	}
+	out, err := Render(entries, FormatDotenv)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if !strings.Contains(out, "DATABASE_URL=postgres://user:pass@host/db?sslmode=disable") {
+		t.Errorf("expected full value preserved, got: %s", out)
+	}
+}
